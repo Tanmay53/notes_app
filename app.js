@@ -1,13 +1,27 @@
 const chalk = require('chalk');
 const yargs = require('yargs');
 const getNotes = require('./notes.js');
+const { string } = require('yargs');
 
 // Create Remove Command
 yargs.command({
   command: "add",
   describe: "Add a new note",
-  handler: function() {
-    console.log(chalk.green("Adding a new note."));
+  builder: {
+    title: {
+      describe: "Note title",
+      demandOption: true,
+      type: 'string'
+    },
+    body: {
+      describe: "Note body",
+      demandOption: true,
+      type: 'string'
+    }
+  },
+  handler: function(argv) {
+    console.log(chalk.green("Title: " + argv.title));
+    console.log(chalk.green("Body : " + argv.body));
   }
 })
 
@@ -38,4 +52,4 @@ yargs.command({
   }
 })
 
-console.log(yargs.argv);
+yargs.parse();
