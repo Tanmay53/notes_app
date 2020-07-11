@@ -1,5 +1,6 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const { array } = require('yargs');
 
 const getNotes = function() {
   return "Your Notes....";
@@ -15,13 +16,30 @@ const addNote = function(title, body) {
       title: title,
       body: body
     });
+    saveNotes(notes);
+    console.log(chalk.green.inverse(" Note Added Successfully. "));
+  }
+  else {
+    console.log(chalk.red.inverse(" Note Title already exists. "));
+  }
+}
+
+const removeNote = function(title) {
+  const notes = readNotes();
+
+  const noteIndex = notes.findIndex( (note) => (note.title === title));
+
+  if(noteIndex !== -1) {
+    const removedNote = notes.splice(noteIndex, 1);
 
     saveNotes(notes);
 
-    console.log(chalk.green.inverse("Note Added Successfully."));
+    console.log(chalk.green.inverse(" Note Removed Successfully "));
+    console.log(chalk.red.bold(removedNote[0].title));
+    console.log(chalk.red(removedNote[0].body));
   }
   else {
-    console.log(chalk.red.inverse("Note Title already exists."));
+    console.log(chalk.yellow.inverse(" The Note was not found "));
   }
 }
 
@@ -45,5 +63,6 @@ const saveNotes = function(notesData) {
 
 module.exports = {
   getNotes: getNotes,
-  addNote: addNote
+  addNote: addNote,
+  removeNote: removeNote
 };
