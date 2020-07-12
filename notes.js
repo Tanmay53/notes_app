@@ -2,21 +2,6 @@ const fs = require('fs');
 const chalk = require('chalk');
 const { array } = require('yargs');
 
-const getNotes = () => {
-  const notes = readNotes();
-
-  if(notes.length > 0) {
-    console.log(chalk.greenBright("Your Notes"));
-
-    notes.forEach( (note) => {
-      console.log(chalk.yellowBright(note.title));
-    });
-  }
-  else {
-    console.log(chalk.yellow.inverse(" No Notes were found. "));
-  }
-}
-
 const addNote = (title, body) => {
   const notes = readNotes();
 
@@ -54,6 +39,36 @@ const removeNote = (title) => {
   }
 }
 
+const getNotes = () => {
+  const notes = readNotes();
+
+  if(notes.length > 0) {
+    console.log(chalk.greenBright("Your Notes"));
+
+    notes.forEach( (note) => {
+      console.log(chalk.yellowBright(note.title));
+    });
+  }
+  else {
+    console.log(chalk.yellow.inverse(" No Notes were found. "));
+  }
+}
+
+const getNoteData = (title) => {
+  const notes = readNotes();
+
+  const noteData = notes.find( (note) => (note.title === title) );
+
+  if(noteData) {
+    console.log(chalk.yellow.bold(noteData.title));
+
+    console.log(chalk.whiteBright(noteData.body));
+  }
+  else {
+    console.log(chalk.red.inverse(" The Note was not found. "));
+  }
+}
+
 const readNotes = () => {
   try {
     const dataBuffer = fs.readFileSync("./notes.json");
@@ -75,5 +90,6 @@ const saveNotes = (notesData) => {
 module.exports = {
   getNotes: getNotes,
   addNote: addNote,
-  removeNote: removeNote
+  removeNote: removeNote,
+  getNoteData: getNoteData
 };
