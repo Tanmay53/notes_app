@@ -2,11 +2,22 @@ const fs = require('fs');
 const chalk = require('chalk');
 const { array } = require('yargs');
 
-const getNotes = function() {
-  return "Your Notes....";
+const getNotes = () => {
+  const notes = readNotes();
+
+  if(notes.length > 0) {
+    console.log(chalk.greenBright("Your Notes"));
+
+    notes.forEach( (note) => {
+      console.log(chalk.yellowBright(note.title));
+    });
+  }
+  else {
+    console.log(chalk.yellow.inverse(" No Notes were found. "));
+  }
 }
 
-const addNote = function(title, body) {
+const addNote = (title, body) => {
   const notes = readNotes();
 
   const noteIndex = notes.findIndex( (note) => (note.title === title) );
@@ -24,7 +35,7 @@ const addNote = function(title, body) {
   }
 }
 
-const removeNote = function(title) {
+const removeNote = (title) => {
   const notes = readNotes();
 
   const noteIndex = notes.findIndex( (note) => (note.title === title));
@@ -43,7 +54,7 @@ const removeNote = function(title) {
   }
 }
 
-const readNotes = function() {
+const readNotes = () => {
   try {
     const dataBuffer = fs.readFileSync("./notes.json");
     const dataString = dataBuffer.toString();
@@ -55,7 +66,7 @@ const readNotes = function() {
   }
 }
 
-const saveNotes = function(notesData) {
+const saveNotes = (notesData) => {
   const notesString = JSON.stringify(notesData);
 
   fs.writeFileSync("notes.json", notesString);
