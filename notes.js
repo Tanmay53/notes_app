@@ -1,8 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
-const { array } = require('yargs');
 
-const addNote = (title, body) => {
+const addNote = (title, contents, type = "text") => {
   const notes = readNotes();
 
   const noteIndex = notes.findIndex( (note) => (note.title === title) );
@@ -10,7 +9,8 @@ const addNote = (title, body) => {
   if(noteIndex === -1) {
     notes.push({
       title: title,
-      body: body
+      body: contents,
+      type: type
     });
     saveNotes(notes);
     console.log(chalk.green.inverse(" Note Added Successfully. "));
@@ -32,7 +32,15 @@ const removeNote = (title) => {
 
     console.log(chalk.green.inverse(" Note Removed Successfully "));
     console.log(chalk.red.bold(removedNote[0].title));
-    console.log(chalk.red(removedNote[0].body));
+
+    if(removedNote[0].type === "text") {
+      console.log(chalk.red(removedNote[0].body));
+    }
+    else if(removedNote[0].type === "list") {
+      removedNote[0].body.forEach( (item, index) => {
+        console.log(chalk.red( (index + 1) + ". " + item));
+      })
+    }
   }
   else {
     console.log(chalk.yellow.inverse(" The Note was not found "));
@@ -46,7 +54,7 @@ const getNotes = () => {
     console.log(chalk.greenBright("Your Notes"));
 
     notes.forEach( (note) => {
-      console.log(chalk.yellowBright(note.title));
+      console.log(chalk.yellowBright(note.title + ((note.type != "text") ? (" (" + note.type + ")") : "")));
     });
   }
   else {
@@ -62,7 +70,14 @@ const getNoteData = (title) => {
   if(noteData) {
     console.log(chalk.yellow.bold(noteData.title));
 
-    console.log(chalk.whiteBright(noteData.body));
+    if(noteData.type == "text") {
+      console.log(chalk.whiteBright(noteData.body));
+    }
+    else if(noteData.type == "list") {
+      noteData.body.forEach( (item, index) => {
+        console.log(chalk.whiteBright( (index + 1) + ". " + item));
+      } );
+    }
   }
   else {
     console.log(chalk.red.inverse(" The Note was not found. "));

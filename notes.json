@@ -1,1 +1,1 @@
-[{"title":"Test 6","body":"Listing completed successfully."},{"title":"Test 7","body":"Reading Completed"}]
+[{"title":"List Test","body":["Information","Processing","Output"],"type":"list"},{"title":"Test Data","body":"Hi, there","type":"text"}]

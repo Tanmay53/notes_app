@@ -19,7 +19,27 @@ yargs.command({
     }
   },
   handler(argv) {
-    notes.addNote(argv.title, argv.body);
+    notes.addNote(argv.title, argv.body, "text");
+  }
+})
+
+yargs.command({
+  command: "add-list",
+  describe: "Add a new list",
+  builder: {
+    title: {
+      describe: "Note title",
+      demandOption: true,
+      type: 'string'
+    },
+    items: {
+      describe: "List of items in the note(--item item_1 item_2 item_3....)",
+      demandOption: true,
+      type: 'array'
+    }
+  },
+  handler(argv) {
+    notes.addNote(argv.title, argv.items, "list");
   }
 })
 
