@@ -1,10 +1,20 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const { isArray } = require('util');
 
-const addNote = (title, contents, type = "text") => {
+const addNote = (title, contents, type) => {
   const notes = readNotes();
 
   const noteIndex = notes.findIndex( (note) => (note.title === title) );
+
+  if(type === undefined) {
+    if(isArray(contents)) {
+      type = "list";
+    }
+    else {
+      type = "text";
+    }
+  }
 
   if(noteIndex === -1) {
     notes.push({

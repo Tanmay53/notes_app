@@ -4,7 +4,7 @@ const notes = require('./notes.js');
 
 // Create Remove Command
 yargs.command({
-  command: "add",
+  command: "add [type]",
   describe: "Add a new note",
   builder: {
     title: {
@@ -15,31 +15,27 @@ yargs.command({
     body: {
       describe: "Note body",
       demandOption: true,
-      type: 'string'
-    }
-  },
-  handler(argv) {
-    notes.addNote(argv.title, argv.body, "text");
-  }
-})
-
-yargs.command({
-  command: "add-list",
-  describe: "Add a new list",
-  builder: {
-    title: {
-      describe: "Note title",
-      demandOption: true,
-      type: 'string'
-    },
-    items: {
-      describe: "List of items in the note(--item item_1 item_2 item_3....)",
-      demandOption: true,
       type: 'array'
     }
   },
   handler(argv) {
-    notes.addNote(argv.title, argv.items, "list");
+    switch(argv.type) {
+      case "text":
+      case "list":
+      case undefined:
+        var contents = argv.body;
+
+        if((argv.type === "text") || ((argv.type === undefined) && (argv.body.length === 1))) {
+          contents = argv.body.join("\n");
+        }
+        
+        notes.addNote(argv.title, contents, argv.type);
+
+        break;
+      default:
+        console.log(chalk.red.inverse(" Note type is not availabe "));
+        console.log(chalk.yellow("Use 'text' or 'list' as note types"));
+    }
   }
 })
 
