@@ -61,10 +61,21 @@ const getNotes = () => {
   const notes = readNotes();
 
   if(notes.length > 0) {
-    console.log(chalk.greenBright("Your Notes"));
+    console.log(chalk.greenBright("Your Notes in " + process.cwd() + " are :\n"));
+
 
     notes.forEach( (note) => {
-      console.log(chalk.yellowBright(note.title + ((note.type != "text") ? (" (" + note.type + ")") : "")));
+      var title = note.title, description = "";
+
+      if(title.indexOf(" ") !== -1) {
+        title = "\"" + title + "\"";
+      }
+
+      if(note.type != "text") {
+        description = " (" + note.type + ")";
+      }
+
+      console.log(chalk.yellowBright(title + description));
     });
   }
   else {

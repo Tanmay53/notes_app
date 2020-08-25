@@ -1,83 +1,51 @@
 const chalk = require('chalk');
-const yargs = require('yargs');
 const notes = require('./notes.js');
+const {program} = require('commander');
 
-// Create Remove Command
-yargs.command({
-  command: "add [type]",
-  describe: "Add a new note",
-  builder: {
-    title: {
-      describe: "Note title",
-      demandOption: true,
-      type: 'string'
-    },
-    body: {
-      describe: "Note body",
-      demandOption: true,
-      type: 'array'
+program.version("0.0.2");
+
+// Adding a new note.
+program
+  .command("add <title> <body...>")
+  .description("Create a new note")
+  .option("-t, --text", "Create a text note", true)
+  .option("-l, --list", "Create a list note", false)
+  .action( (title, body, commandObject) => {
+    var type = "";
+    if(commandObject.list) {
+      type = "list";
     }
-  },
-  handler(argv) {
-    switch(argv.type) {
-      case "text":
-      case "list":
-      case undefined:
-        var contents = argv.body;
-
-        if((argv.type === "text") || ((argv.type === undefined) && (argv.body.length === 1))) {
-          contents = argv.body.join("\n");
-        }
-        
-        notes.addNote(argv.title, contents, argv.type);
-
-        break;
-      default:
-        console.log(chalk.red.inverse(" Note type is not availabe "));
-        console.log(chalk.yellow("Use 'text' or 'list' as note types"));
+    else if((commandObject.text) || ((! commandObject.text) && (! commandObject.list))) {
+      body = body.join("\n");
+      type = "text";
     }
-  }
-})
 
-// Creating a Remove Command
-yargs.command({
-  command: "remove",
-  describe: "Remove a note.",
-  builder: {
-    title: {
-      describe: "Note title",
-      demandOption: true,
-      type: "string"
-    }
-  },
-  handler(argv) {
-    notes.removeNote(argv.title);
-  }
-})
+    notes.addNote(title, body, type);
+  });
 
-// Creating a list Command
-yargs.command({
-  command: "list",
-  describe: "List all notes",
-  handler() {
+// Removing an existing note.
+program
+  .command("remove rm <title>")
+  .alias("rm")
+  .description("Remove an existing note")
+  .action( (title) => {
+    notes.removeNote(title);
+  });
+
+// Listing all the notes.
+program
+  .command('list', {isDefault: true})
+  .description('List all notes in current folder')
+  .action( () => {
     notes.getNotes();
-  }
-})
+  });
 
-// Creating a read Command
-yargs.command({
-  command: "read",
-  describe: "Read a note",
-  builder: {
-    title: {
-      describe: "Note Title",
-      demandOption: true,
-      type: "string"
-    }
-  },
-  handler(argv) {
-    notes.getNoteData(argv.title);
-  }
-})
+// Reading the notes
+program
+  .command('read <title>')
+  .description("Read a note")
+  .action( (title) => {
+    notes.getNoteData(title);
+  });
 
-yargs.parse();
+program.parse();
