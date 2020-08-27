@@ -22,8 +22,11 @@ const addNote = (title, contents, type) => {
       body: contents,
       type: type
     });
+
     saveNotes(notes);
     console.log(chalk.green.inverse(" Note Added Successfully. "));
+
+    getNoteData(title);
   }
   else {
     console.log(chalk.red.inverse(" Note Title already exists. "));
@@ -92,11 +95,11 @@ const getNoteData = (title) => {
     console.log(chalk.yellow.bold(noteData.title));
 
     if(noteData.type == "text") {
-      console.log(chalk.whiteBright(noteData.body));
+      console.log(chalk.blueBright(noteData.body));
     }
     else if(noteData.type == "list") {
       noteData.body.forEach( (item, index) => {
-        console.log(chalk.whiteBright( (index + 1) + ". " + item));
+        console.log(chalk.greenBright(( (index + 1) + ". ") + chalk.blueBright(item)));
       } );
     }
   }

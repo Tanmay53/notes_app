@@ -11,6 +11,9 @@ program
   .option("-t, --text", "Create a text note", true)
   .option("-l, --list", "Create a list note", false)
   .action( (title, body, commandObject) => {
+    title = title.trim();
+    body = body.map( (text) => text.trim() );
+    
     var type = "";
     if(commandObject.list) {
       type = "list";
@@ -29,6 +32,7 @@ program
   .alias("rm")
   .description("Remove an existing note")
   .action( (title) => {
+    title = title.trim();
     notes.removeNote(title);
   });
 
@@ -45,6 +49,7 @@ program
   .command('read <title>')
   .description("Read a note")
   .action( (title) => {
+    title = title.trim();
     notes.getNoteData(title);
   });
 
