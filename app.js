@@ -6,33 +6,28 @@ program.version("0.0.2");
 
 // Adding a new note.
 program
-  .command("add <title> <body...>")
+  .command("add <title> [body...]")
   .description("Create a new note")
   .option("-t, --text", "Create a text note", true)
   .option("-l, --list", "Create a list note", false)
   .action( (title, body, commandObject) => {
-    title = title.trim();
-    body = body.map( (text) => text.trim() );
-    
-    var type = "";
-    if(commandObject.list) {
-      type = "list";
-    }
-    else if((commandObject.text) || ((! commandObject.text) && (! commandObject.list))) {
-      body = body.join("\n");
-      type = "text";
-    }
-
-    notes.addNote(title, body, type);
+      var type = "";
+      if(commandObject.list) {
+        type = "list";
+      }
+      else if((commandObject.text) || ((! commandObject.text) && (! commandObject.list))) {
+        type = "text";
+      }
+  
+      notes.addNote(title, body, type);
   });
 
 // Removing an existing note.
 program
-  .command("remove rm <title>")
+  .command("remove <title>")
   .alias("rm")
   .description("Remove an existing note")
   .action( (title) => {
-    title = title.trim();
     notes.removeNote(title);
   });
 
@@ -49,7 +44,6 @@ program
   .command('read <title>')
   .description("Read a note")
   .action( (title) => {
-    title = title.trim();
     notes.getNoteData(title);
   });
 

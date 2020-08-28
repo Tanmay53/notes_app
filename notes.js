@@ -2,38 +2,64 @@ const fs = require('fs');
 const chalk = require('chalk');
 const { isArray } = require('util');
 
-const addNote = (title, contents, type) => {
-  const notes = readNotes();
+const addNote = (title, body, type) => {
+  title = title.trim();
+  if(title.length > 0) {
+    if(body.length === 0) {
+      
+    }
+  
+    // Setting the flag to true for checking if the body has contents other than whitespaces
+    bodyIsEmpty = true;
+  
+    body = body.map( (text) => {
+      var text = text.trim();
+  
+      // Setting the flag to false if at least one line of the body has is not a whitespace.
+      if(bodyIsEmpty && (text.length > 0)) {
+        bodyIsEmpty = false;
+      }
+  
+      return text;
+    } );
 
-  const noteIndex = notes.findIndex( (note) => (note.title === title) );
 
-  if(type === undefined) {
-    if(isArray(contents)) {
-      type = "list";
+    if(!bodyIsEmpty) {
+      if(type === "text") {
+        body = body.join("\n");
+      }
+    
+      const notes = readNotes();
+    
+      const noteIndex = notes.findIndex( (note) => (note.title === title) );
+    
+      if(noteIndex === -1) {
+        notes.push({
+          title: title,
+          body: body,
+          type: type
+        });
+    
+        saveNotes(notes);
+        console.log(chalk.green.inverse(" Note Added Successfully. "));
+    
+        getNoteData(title);
+      }
+      else {
+        console.log(chalk.red.inverse(" Note Title already exists. "));
+      }
     }
     else {
-      type = "text";
+      console.log(chalk.red.inverse(" The Body should have some text! "));
     }
   }
-
-  if(noteIndex === -1) {
-    notes.push({
-      title: title,
-      body: contents,
-      type: type
-    });
-
-    saveNotes(notes);
-    console.log(chalk.green.inverse(" Note Added Successfully. "));
-
-    getNoteData(title);
-  }
   else {
-    console.log(chalk.red.inverse(" Note Title already exists. "));
+    console.log(chalk.red.inverse(" The Title should have some text! "));
   }
 }
 
 const removeNote = (title) => {
+  title = title.trim();
   const notes = readNotes();
 
   const noteIndex = notes.findIndex( (note) => (note.title === title));
@@ -87,6 +113,7 @@ const getNotes = () => {
 }
 
 const getNoteData = (title) => {
+  title = title.trim();
   const notes = readNotes();
 
   const noteData = notes.find( (note) => (note.title === title) );
